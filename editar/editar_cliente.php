@@ -37,6 +37,7 @@ if (mysqli_num_rows($consulta) > 0) {
         $vistapellido = $fila["apellido"];
         $vistatel = $fila["telefono"];
         $vistacorreo = $fila["correo"];
+        $vistaclave = $fila["clave"];
     }
 }
 
@@ -45,8 +46,9 @@ if (isset($_POST["guardar"])) {
     $apellido = $_POST["apellido"];
     $telefono = $_POST["telefono"];
     $correo = $_POST["correo"];
+    $clave = $_POST["clave"];
 
-    $update = mysqli_query($conn, "UPDATE clientes SET nombre = '$nombre', apellido = '$apellido', telefono = '$telefono', correo = '$correo' WHERE id_cliente = $id");
+    $update = mysqli_query($conn, "UPDATE clientes SET nombre = '$nombre', apellido = '$apellido', telefono = '$telefono', correo = '$correo', clave = '$clave' WHERE id_cliente = $id");
     if ($update) {
         $success = true;
     } else {
@@ -96,6 +98,10 @@ if (isset($_POST["guardar"])) {
                     <div class="form-group">
                         <label for="correo">Correo:</label>
                         <input type="email" value="<?php echo $vistacorreo; ?>" name="correo" id="correo" class="form-control" placeholder="Correo" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="clave">Clave:</label>
+                        <input type="password" class="form-control" name="clave" value="<?php echo $vistaclave; ?>" required>
                     </div>
 
                     <button type="submit" name="guardar" class="btn btn-primary">Guardar</button>

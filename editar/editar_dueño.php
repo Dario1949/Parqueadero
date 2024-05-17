@@ -1,9 +1,7 @@
 <?php
-session_start();
 require("../config/config.php");
 
 error_reporting(0);
-
 // Comprobar sesión usuario
 function sessionLocal($session, $c)
 {
@@ -31,12 +29,13 @@ if (isset($_POST["guardar"])) {
     $apellido = $_POST["apellido"];
     $telefono = $_POST["telefono"];
     $correo = $_POST["correo"];
+    $clave = $_POST["clave"];
 
     // Actualizar los datos del dueño en la base de datos
     $update = mysqli_query($conn, "UPDATE duenos SET nombre = '$nombre', apellido = '$apellido', telefono = '$telefono', correo = '$correo' WHERE id = $id");
     if ($update) {
         echo "<script>window.alert('Datos actualizados correctamente');</script>";
-        echo "<script>window.location = 'lista_dueño.php';</script>";
+        echo "<script>window.location = '../vista/lista_dueño.php';</script>";
     } else {
         echo "Error al actualizar los datos";
     }
@@ -50,9 +49,11 @@ $consulta = mysqli_query($conn, "SELECT * FROM duenos WHERE id = $id");
 if (mysqli_num_rows($consulta) > 0) {
     while ($fila = mysqli_fetch_assoc($consulta)) {
         $vistanombre = $fila["nombre"];
-        $vistaapellido = $fila["apellido"];
-        $vistatelefono = $fila["telefono"];
+        $vistapellido = $fila["apellido"];
+        $vistatel = $fila["telefono"];
         $vistacorreo = $fila["correo"];
+        $vistaclave = $fila["clave"];
+        $vistasalario = $fila["salario"];    
     }
 } else {
     $disabled = "display:none";
@@ -88,19 +89,27 @@ if (mysqli_num_rows($consulta) > 0) {
                 <form action="" method="post" style="<?php echo $disabled; ?>">
                     <div class="form-group">
                         <label for="nombre">Nombre:</label>
-                        <input type="text" class="form-control" id="nombre" name="nombre" value="<?php echo $vistanombre; ?>" required>
+                        <input type="text" class="form-control" name="nombre" value="<?php echo $vistanombre; ?>" required>
                     </div>
                     <div class="form-group">
                         <label for="apellido">Apellido:</label>
-                        <input type="text" class="form-control" id="apellido" name="apellido" value="<?php echo $vistaapellido; ?>" required>
+                        <input type="text" class="form-control" name="apellido" value="<?php echo $vistapellido; ?>" required>
                     </div>
                     <div class="form-group">
                         <label for="telefono">Teléfono:</label>
-                        <input type="tel" class="form-control" id="telefono" name="telefono" value="<?php echo $vistatelefono; ?>" required>
+                        <input type="text" class="form-control" name="telefono" value="<?php echo $vistatel; ?>" required>
                     </div>
                     <div class="form-group">
                         <label for="correo">Correo:</label>
-                        <input type="email" class="form-control" id="correo" name="correo" value="<?php echo $vistacorreo; ?>" required>
+                        <input type="email" class="form-control" name="correo" value="<?php echo $vistacorreo; ?>" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="clave">Clave:</label>
+                        <input type="password" class="form-control" name="clave" value="<?php echo $vistaclave; ?>" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="salario">Salario:</label>
+                        <input type="text" class="form-control" name="salario" value="<?php echo $vistasalario; ?>" required>
                     </div>
                     <button type="submit" class="btn btn-primary" name="guardar">Guardar</button>
                 </form>

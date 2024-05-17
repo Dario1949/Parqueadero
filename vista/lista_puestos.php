@@ -2,7 +2,7 @@
 session_start();
 require("../config/config.php");
 
-error_reporting(0);
+//error_reporting(0);
 
 // Comprobar sesión usuario
 function sessionLocal($session, $c)
@@ -59,7 +59,7 @@ $session = sessionLocal($session, $conn);
                     </thead>
                     <tbody>
                         <?php
-                        $resultado = mysqli_query($conn, "SELECT puestos.*, vehiculos.* FROM puestos LEFT JOIN vehiculos ON puestos.id = vehiculos.puesto");
+                        $resultado = mysqli_query($conn, "SELECT * FROM puestos");
                         if (mysqli_num_rows($resultado) > 0) {
                             while ($puesto = mysqli_fetch_assoc($resultado)) { ?>
                                 <tr>

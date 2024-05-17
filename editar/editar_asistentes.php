@@ -37,6 +37,7 @@ if (mysqli_num_rows($consulta) > 0) {
         $vistapellido = $fila["apellido"];
         $vistatel = $fila["telefono"];
         $vistacorreo = $fila["correo"];
+        $vistaclave = $fila["clave"];
         $vistasalario = $fila["salario"];
     }
 }
@@ -46,9 +47,10 @@ if (isset($_POST["guardar"])) {
     $apellido = $_POST["apellido"];
     $telefono = $_POST["telefono"];
     $correo = $_POST["correo"];
+    $clave = $_POST["clave"];
     $salario = $_POST["salario"];
 
-    $update = mysqli_query($conn, "UPDATE asistentes SET nombre = '$nombre', apellido = '$apellido', telefono = '$telefono', correo = '$correo', salario = '$salario' WHERE id = $id");
+    $update = mysqli_query($conn, "UPDATE asistentes SET nombre = '$nombre', apellido = '$apellido', telefono = '$telefono', correo = '$correo', salario = '$salario', clave = '$clave' WHERE id = $id");
     if ($update) {
         $success = true;
     } else {
@@ -97,6 +99,10 @@ if (isset($_POST["guardar"])) {
                     <div class="form-group">
                         <label for="correo">Correo:</label>
                         <input type="email" class="form-control" name="correo" value="<?php echo $vistacorreo; ?>" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="clave">Clave:</label>
+                        <input type="password" class="form-control" name="clave" value="<?php echo $vistaclave; ?>" required>
                     </div>
                     <div class="form-group">
                         <label for="salario">Salario:</label>

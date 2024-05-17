@@ -1,6 +1,10 @@
 <?php
-if (!isset($_SESSION)) {
-    session_start();
+if (file_exists("../funciones.php") && !strpos($_SERVER['REQUEST_URI'], "registrar") | file_exists("../funciones.php") && !strpos($_SERVER['REQUEST_URI'], "factura")) {
+    require("../funciones.php");
+}
+
+if (file_exists("funciones.php") && !strpos($_SERVER['REQUEST_URI'], "registrar") | file_exists("funciones.php") && !strpos($_SERVER['REQUEST_URI'], "factura")) {
+    require("funciones.php");
 }
 
 error_reporting(0);
@@ -8,7 +12,7 @@ error_reporting(0);
 $host = $_SERVER['HTTP_HOST'];
 $folder = $_SERVER['REQUEST_URI'];
 
-$session = empty($_SESSION["usuario"]) ? false : true;
+$session = empty($_COOKIE["usuario"]) ? false : true;
 ?>
 
 <div class="col-auto col-md-3 col-xl-2 px-sm-2 px-0 bg-dark">
@@ -18,35 +22,33 @@ $session = empty($_SESSION["usuario"]) ? false : true;
         </a>
         <ul class="nav nav-pills flex-column mb-sm-auto mb-0 align-items-center align-items-sm-start" id="menu">
             <li class="nav-item">
-                <a href="http://<?php echo $host; ?>/ParqueaderoVL/" class="nav-link align-middle px-0">
+                <a href="../home.php" class="nav-link align-middle px-0">
                     <i class="fs-4 bi-house"></i> <span class="ms-1 d-none d-sm-inline">Inicio</span>
                 </a>
             </li>
             <?php if ($session) { ?>
                 <li>
                     <a href="#create" data-bs-toggle="collapse" class="nav-link px-0 align-middle">
-                        <i class="fs-4 bi-grid"></i> <span class="ms-1 d-none d-sm-inline">Crear</span> </a>
+                        <i class="fs-4 bi-grid"></i> <span class="ms-1 d-none d-sm-inline">Agregar</span> </a>
                     <ul class="collapse nav flex-column ms-1" id="create" data-bs-parent="#menu">
-                        <li class="w-100">
-                            <a href="http://<?php echo $host; ?>/ParqueaderoVL/registrar/registrar_dueño.php" class="nav-link px-0"> <span class="d-none d-sm-inline">Administrador</span></a>
-                        </li>
-                        <li>
-                            <a href="http://<?php echo $host; ?>/ParqueaderoVL/registrar/registrar_cliente.php" class="nav-link px-0"> <span class="d-none d-sm-inline">Cliente</span></a>
-                        </li>
-                        <li>
-                            <a href="http://<?php echo $host; ?>/ParqueaderoVL/registrar/registrar_cajero.php" class="nav-link px-0"> <span class="d-none d-sm-inline">Cajero</span></a>
-                        </li>
-                        <li>
-                            <a href="http://<?php echo $host; ?>/ParqueaderoVL/registrar/registrar_asistente.php" class="nav-link px-0"> <span class="d-none d-sm-inline">Asistente administrativo</span></a>
-                        </li>
-                        <li>
-                            <a href="http://<?php echo $host; ?>/ParqueaderoVL/registrar/registrar_vehiculo.php" class="nav-link px-0"> <span class="d-none d-sm-inline">Vehículo</span></a>
-                        </li>
-                        <li>
-                            <a href="http://<?php echo $host; ?>/ParqueaderoVL/puestos/crear_puesto.php" class="nav-link px-0"> <span class="d-none d-sm-inline">Puesto</span></a>
-                        </li>
+                        <?php
+                        if (obtenerCampo("rol") >= 2) { ?>
+                            <li>
+                                <a href="http://<?php echo $host; ?>/ParqueaderoVL/registrar/registrar_vehiculo.php" class="nav-link px-0"> <span class="d-none d-sm-inline">Vehículo</span></a>
+                            </li>
+                            <li>
+                                <a href="http://<?php echo $host; ?>/ParqueaderoVL/puestos/crear_puesto.php" class="nav-link px-0"> <span class="d-none d-sm-inline">Puesto</span></a>
+                            </li>
+                        <?php } else { ?>
+                            <li>
+                                <a href="http://<?php echo $host; ?>/ParqueaderoVL/registrar/registrar_vehiculo.php" class="nav-link px-0"> <span class="d-none d-sm-inline">Vehículo</span></a>
+                            </li>
+                            <li>
+                                <a href="http://<?php echo $host; ?>/ParqueaderoVL/registrar/registrar_puesto_reservado.php" class="nav-link px-0"> <span class="d-none d-sm-inline">Puesto reservado</span></a>
+                            </li>
+                        <?php } ?>
                     </ul>
-                </li>                
+                </li>
             <?php } else { ?>
                 <li>
                     <a href="#login" data-bs-toggle="collapse" class="nav-link px-0 align-middle">
@@ -78,9 +80,6 @@ $session = empty($_SESSION["usuario"]) ? false : true;
                         <a href="http://<?php echo $host; ?>/ParqueaderoVL/vista/lista_vehiculos.php" class="nav-link px-0"> <span class="d-none d-sm-inline">Vehículos</span></a>
                     </li>
                     <li>
-                        <a href="http://<?php echo $host; ?>/ParqueaderoVL/vista/lista_clientes_vehiculos.php" class="nav-link px-0"> <span class="d-none d-sm-inline">Clientes y vehículos</span></a>
-                    </li>
-                    <li>
                         <a href="http://<?php echo $host; ?>/ParqueaderoVL/vista/lista_puestos.php" class="nav-link px-0"> <span class="d-none d-sm-inline">Puestos</span></a>
                     </li>
                 </ul>
@@ -94,13 +93,16 @@ $session = empty($_SESSION["usuario"]) ? false : true;
                     <span class="d-none d-sm-inline mx-1">Admin</span>
                 </a>
                 <ul class="dropdown-menu dropdown-menu-dark text-small shadow" aria-labelledby="dropdownUser1">
-                    <li><a class="dropdown-item" href="#">Editar perfil</a></li>
+                    <?php
+                    if (obtenerCampo("rol") == 1) { ?>
+                        <li><a class="dropdown-item" id="accountsb">Cuentas bancarias</a></li>
+                    <?php } ?>
                     <li>
                         <hr class="dropdown-divider">
                     </li>
-                    <li><a class="dropdown-item" href="#">Cerrar sesión</a></li>
+                    <li><a class="dropdown-item" id="logout">Cerrar sesión</a></li>
                 </ul>
             </div>
         <?php } ?>
     </div>
-</div> <?php include "../includes/js.php"; ?>
+</div>

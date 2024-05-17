@@ -43,38 +43,56 @@ error_reporting(0);
                         formulario.addEventListener("submit", (e) => {
                             e.preventDefault();
                             const data = new FormData(formulario);
+                            const name = data.get("name");
+                            const lastname = data.get("lastname");
+                            const tel = data.get("tel");
                             const email = data.get("email");
                             const password = data.get("password");
                             const rol = data.get("rol");
 
-                            if (email.length > 0) {
-                                if (password.length > 0) {
-                                    $.post(
-                                        "controllers/login/index.php", {
-                                            email,
-                                            password,
-                                            rol,
-                                        },
-                                        function(res) {
-                                            const response = JSON.parse(res);
+                            if (name.length > 0) {
+                                if (lastname.length > 0) {
+                                    if (email.length > 0) {
+                                        if (tel.length > 0) {
+                                            if (password.length > 0) {
+                                                $.post(
+                                                    "controllers/register/index.php", {
+                                                        name,
+                                                        lastname,
+                                                        tel,
+                                                        email,
+                                                        password,
+                                                        rol,
+                                                    },
+                                                    function(res) {
+                                                        const response = JSON.parse(res);
 
-                                            if (response.success) {
-                                                alert(response.message);
-                                                window.location = "home.php";
-                                                setSessionCookie(
-                                                    "usuario",
-                                                    "email:" + email + ":rol:" + rol
+                                                        if (response.success) {
+                                                            alert(response.message);
+                                                            window.location = "home.php";
+                                                            setSessionCookie(
+                                                                "usuario",
+                                                                "email:" + email + ":rol:" + rol
+                                                            );
+                                                        } else {
+                                                            alert(response.message);
+                                                        }
+                                                    }
                                                 );
                                             } else {
-                                                alert(response.message);
+                                                alert("Debe agregar su contraseña");
                                             }
+                                        } else {
+                                            alert("Debe ingresar su correo electrónico");
                                         }
-                                    );
+                                    } else {
+                                        alert("Debe ingresar su teléfono");
+                                    }
                                 } else {
-                                    alert("Debe agregar su contraseña");
+                                    alert("Debe ingresar su apellido");
                                 }
                             } else {
-                                alert("Debe ingresar su correo electrónico");
+                                alert("Debe ingresar su nombre");
                             }
                         });
                     });
@@ -90,8 +108,22 @@ error_reporting(0);
                                 <option value="1" selected>Cliente</option>
                                 <option value="2">Asistente</option>
                                 <option value="3">Cajero</option>
-                                <option value="4">Dueño</option>
+                                <?php if ($duenos_contar == 0) { ?>
+                                    <option value="4">Dueño</option>
+                                <?php } ?>
                             </select>
+                        </div>
+                        <div class="form-outline mb-4">
+                            <label class="form-label" for="name">Nombre</label>
+                            <input type="text" id="name" name="name" class="form-control" />
+                        </div>
+                        <div class="form-outline mb-4">
+                            <label class="form-label" for="lastname">Apellido</label>
+                            <input type="text" id="lastname" name="lastname" class="form-control" />
+                        </div>
+                        <div class="form-outline mb-4">
+                            <label class="form-label" for="tel">Teléfono</label>
+                            <input type="tel" id="tel" name="tel" class="form-control" />
                         </div>
                         <div class="form-outline mb-4">
                             <label class="form-label" for="email">Correo electrónico</label>
@@ -101,25 +133,11 @@ error_reporting(0);
                             <label class="form-label" for="password">Clave</label>
                             <input type="password" id="password" name="password" class="form-control" />
                         </div>
-                        <div class="row mb-4">
-                            <div class="col d-flex justify-content-center">
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" value="" id="remember" checked />
-                                    <label class="form-check-label" for="remember">
-                                        Recordarme
-                                    </label>
-                                </div>
-                            </div>
-
-                            <div class="col">
-                                <a href="#!">Olvidaste tu contraseña?</a>
-                            </div>
-                        </div>
                         <button type="submit" class="btn btn-dark btn-block mb-4 w-100">
-                            Entrar
+                            Crear cuenta
                         </button>
                         <div class="text-center">
-                            <p>¿No tienes cuenta? <a href="register.php">Registrate</a></p>
+                            <p>¿Ya tienes una cuenta? <a href="register.php">Iniciar sesión</a></p>
                         </div>
                     </form>
                 </section>
