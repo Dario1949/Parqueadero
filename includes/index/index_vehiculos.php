@@ -3,8 +3,23 @@
 <h4>Vehículos</h4>
 <hr />
 <div class="container-fluid overflowy-auto p-4">
-    <?php
-    $vehiculos = mysqli_query($conn, "SELECT * FROM vehiculos");
+<?php 
+            if(obtenerCampo("email") != null) {
+                $email_ = trim(obtenerCampo('email'));
+                $select = mysqli_query($conn, "SELECT * FROM clientes WHERE correo = '$email_' LIMIT 1");
+                if(mysqli_num_rows($select) > 0) {
+                    $c = mysqli_fetch_assoc($select);
+
+                    $id_c = $c["id_cliente"];
+                }
+            }
+            ?>
+    <?php    
+    if(obtenerCampo("rol") >= 2) {
+        $vehiculos = mysqli_query($conn, "SELECT * FROM vehiculos");
+    } else {
+        $vehiculos = mysqli_query($conn, "SELECT * FROM vehiculos WHERE id_cliente = '$id_c'");
+    }
     $contar_veh = mysqli_num_rows($vehiculos);
 
     if ($contar_veh > 0) {
@@ -20,16 +35,7 @@
                     <li class="list-group-item">Puesto: <?php echo $vehiculo["puesto"]; ?></li>
                 </ul>
                 <div class="card-body">
-                    <button type="button" class="btn btn-success" data-bs-toggle="tooltip" data-href="http://<?php echo $host; ?>/ParqueaderoVL/editar/editar_vehiculo.php?id=<?php echo $vehiculo["id"]; ?>" data-bs-placement="top" title="Editar">
-                        <svg width="20" height="20" xmlns="http://www.w3.org/2000/svg" class="d-inline-block align-middle">
-                            <image href="icons/edit-svgrepo-com.svg" height="20" width="20" />
-                        </svg>
-                    </button>
-                    <button type="button" class="btn btn-danger" data-bs-toggle="tooltip" data-confirm-delete="true" data-delete-card="vehículo" data-href-delete="http://<?php echo $host; ?>/ParqueaderoVL/delete/delete_vehiculo.php?id=<?php echo $vehiculo["id"]; ?>" data-bs-placement="top" title="Eliminar">
-                        <svg width="20" height="20" xmlns="http://www.w3.org/2000/svg" class="d-inline-block align-middle">
-                            <image href="icons/delete-1487-svgrepo-com.svg" height="20" width="20" />
-                        </svg>
-                    </button>
+                    <a href="vista/lista_vehiculos.php">Ver vehículos</a>
                 </div>
             </div>
     <?php

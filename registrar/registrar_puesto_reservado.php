@@ -4,6 +4,9 @@ require("../config/config.php");
 
 error_reporting(0);
 
+// Obtener id de puesto a reservar, si se envia 
+$puesto_id = $_GET["id"];
+
 $session = empty($_COOKIE["usuario"]) ? "" : $_COOKIE["usuario"];
 
 // Obtener id cliente/cookie
@@ -64,9 +67,9 @@ if (isset($_POST["enviar"])) {
 <body>
     <div class="container-fluid ">
         <div class="row flex-nowrap">
-            <?php #include "../includes/header.php"; ?>
+            <?php /* include "../includes/header.php"; */ ?>
             <div class="col py-3">
-            <button class="btn btn-primary" data-href="/ParqueaderoVL/home.php">Volver a inicio</button>
+            <a href=" /ParqueaderoVL/home.php">Regresar</a> 
                 <h2 class="mt-4 mb-4">Reservar puesto</h2>
                 <form method="post" action="">
                     <div class="form-group">
@@ -76,6 +79,12 @@ if (isset($_POST["enviar"])) {
                         if (mysqli_num_rows($resultado_puestos) > 0) { ?>
                             <select name="puesto" id="puesto" class="form-control">
                                 <option value="auto">Automático</option>
+                                <?php 
+                                $validar = mysqli_query($conn, "SELECT * FROM puestos WHERE id = '".$puesto_id."' AND disponibilidad = 1 AND reservado = 0");
+                                $p_ = mysqli_fetch_assoc($validar);
+                                if(mysqli_num_rows($validar) > 0) { ?>
+                                <option value="<?=$p_["id"];?>" selected><?=$p_["numero"];?></option>
+                                <?php } ?>
                                 <?php while ($puesto = mysqli_fetch_assoc($resultado_puestos)) { ?>
                                     <option value="<?php echo $puesto["id"]; ?>"><?php echo $puesto["numero"]; ?></option>
                                 <?php
@@ -86,7 +95,7 @@ if (isset($_POST["enviar"])) {
                             <?php
                             if (obtenerCampo("rol") >= 2) { ?>
                                 <div class="d-block p-1">
-                                    <button type="button" data-href="http://<?php echo $host; ?>/ParqueaderoVL/puestos/crear_puesto.php" class="btn btn-primary">Crear puesto</button>
+                                    <button type="button" data-href="http://<?php echo $host; ?>/ParqueaderoVL/vista/lista_puestos.php" class="btn btn-primary">Crear puesto</button>
                                 </div>
                             <?php } ?>
                         <?php } ?>

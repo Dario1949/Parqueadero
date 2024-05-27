@@ -2,26 +2,8 @@
 session_start();
 require("../config/config.php");
 
-error_reporting(0);
+//error_reporting(0);
 
-// Comprobar sesión usuario
-function sessionLocal($session, $c)
-{
-    $check = false;
-
-    if (!empty($session)) {
-        $resultado = mysqli_query($c, "SELECT * FROM duenos WHERE correo = '$session'");
-
-        if (mysqli_num_rows($resultado) > 0) $check = true;
-    }
-
-    return $check;
-}
-// Fin comprobar usuario sesión
-
-$session = empty($_SESSION["usuario"]) ? "" : $_SESSION["usuario"];
-
-$session = sessionLocal($session, $conn);
 ?>
 
 <!DOCTYPE html>
@@ -40,14 +22,24 @@ $session = sessionLocal($session, $conn);
     <div class="container-fluid">
         <div class="row flex-nowrap">
             <?php include "../includes/header.php"; ?>
+            <?php 
+            if(obtenerCampo("email") != null) {
+                $email_ = trim(obtenerCampo('email'));
+                $select = mysqli_query($conn, "SELECT * FROM clientes WHERE correo = '$email_' LIMIT 1");
+                if(mysqli_num_rows($select) > 0) {
+                    $c = mysqli_fetch_assoc($select);
+
+                    $id_c = $c["id_cliente"];
+                }
+            }
+            ?>
             <div class="col py-3">
                 <h2>Vehículos</h2>
-                <div class="d-block p-10">
-                    <button type="button" class="btn btn-primary" data-bs-toggle="tooltip" data-bs-placement="top" title="Crear vehículo" data-href="http://<?php echo $host; ?>/ParqueaderoVL/registrar/registrar_vehiculo.php">
+                <div class="d-block p-10 mb-2">
+                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#crearVehiculo" title="Crear vehículo">
                         <svg width="20" height="20" xmlns="http://www.w3.org/2000/svg" class="d-inline-block align-middle">
                             <image href="../icons/plus-circle-1441-svgrepo-com.svg" height="20" width="20" />
                         </svg>
-                        <span class="d-inline-block align-middle">Crear vehículo</span>
                     </button>
                 </div>
                 <table class="table">
@@ -65,7 +57,12 @@ $session = sessionLocal($session, $conn);
                     </thead>
                     <tbody>
                         <?php
-                        $resultado = mysqli_query($conn, "SELECT clientes.id_cliente, clientes.nombre, clientes.apellido, vehiculos.* FROM vehiculos INNER JOIN clientes ON vehiculos.id_cliente = clientes.id_cliente ORDER BY id DESC");
+
+                        if(obtenerCampo("rol") >= 2) {
+                            $resultado = mysqli_query($conn, "SELECT puestos.numero, clientes.id_cliente, clientes.nombre, clientes.apellido, vehiculos.* FROM vehiculos INNER JOIN clientes ON vehiculos.id_cliente = clientes.id_cliente INNER JOIN puestos ON vehiculos.puesto = puestos.id ORDER BY placa DESC");
+                        } else {                            
+                            $resultado = mysqli_query($conn, "SELECT puestos.numero, clientes.*, vehiculos.* FROM vehiculos INNER JOIN clientes ON vehiculos.id_cliente = clientes.id_cliente INNER JOIN puestos ON vehiculos.puesto = puestos.id WHERE vehiculos.id_cliente = '$id_c' ORDER BY placa DESC");
+                        }
                         if (mysqli_num_rows($resultado) > 0) {
                             while ($vehiculo = mysqli_fetch_assoc($resultado)) { ?>
                                 <tr>
@@ -74,21 +71,19 @@ $session = sessionLocal($session, $conn);
                                     <td><?php echo $vehiculo["marca"]; ?></td>
                                     <td><?php echo $vehiculo["modelo"]; ?></td>
                                     <td style="background-color: <?php echo $vehiculo["color"]; ?>;"></td>
-                                    <td><?php echo $vehiculo["puesto"]; ?></td>
+                                    <td><?php echo $vehiculo["numero"]; ?></td>
                                     <td><?php echo $vehiculo["id_cliente"], " | ", $vehiculo["nombre"], " ", $vehiculo["apellido"]; ?></td>
                                     <td>
-                                        <button type="button" class="btn btn-success" data-bs-toggle="tooltip" data-href="http://<?php echo $host; ?>/ParqueaderoVL/editar/editar_vehiculo.php?id=<?php echo $vehiculo["id"]; ?>" data-bs-placement="top" title="Editar">
-                                            <svg width="20" height="20" xmlns="http://www.w3.org/2000/svg" class="d-inline-block align-middle">
-                                                <image href="../icons/edit-svgrepo-com.svg" height="20" width="20" />
-                                            </svg>
+                                        <button type="button" data-modal="<?php echo $vehiculo["id"]; ?>:<?php echo $vehiculo["marca"]; ?>:<?php echo $vehiculo["modelo"]; ?>:<?php echo $vehiculo["color"]; ?>" class="btn btn-success" id="editar" data-bs-toggle="modal" data-bs-target="#editarVehiculo" title="Editar">
+                                            Editar
                                         </button>
-                                        <button type="button" class="btn btn-danger" data-bs-toggle="tooltip" data-confirm-delete="true" data-delete-card="vehículo" data-href-delete="http://<?php echo $host; ?>/ParqueaderoVL/factura/crear.php?id=<?php echo $vehiculo["id"]; ?>" data-bs-placement="top" title="Eliminar">
+                                        <button type="button" data-modal="<?php if(obtenerCampo("rol") >= 2) { echo $vehiculo["id_cliente"]; } else { echo $c["id_cliente"]; } ?>:<?=$vehiculo["id"];?>" class="btn btn-danger" id="eliminar" data-bs-toggle="modal" data-bs-target="#crearFactura" title="Eliminar">
                                             Retirar
                                         </button>
-                                    </td>et
+                                    </td>
                                 </tr>
                         <?php }
-                        }
+                        }                    
                         ?>
                     </tbody>
                 </table>
@@ -97,6 +92,45 @@ $session = sessionLocal($session, $conn);
     </div>
 
     <?php include "../includes/js.php"; ?>
+
+    <script>
+        $(document).ready(() => {
+            $("#activar-reconocer").click(() => {
+                if ($("#placas-reconocer").hasClass("d-none")) {
+                    $("#placas-reconocer").removeClass("d-none");
+                } else {
+                    $("#placas-reconocer").addClass("d-none");
+                }
+            })
+        })
+    </script>    
+
+    <?php include "../modals/editar_vehiculo.php"; ?>
+    <?php include "../modals/crear_vehiculo.php"; ?>
+    <?php include "../modals/crear_factura.php"; ?>
+
+    <script src='https://unpkg.com/tesseract.js@2.0.0-alpha.7/dist/tesseract.min.js'></script>
+    <script src="../js/reconocer-placas.js"></script>
+
+    <script>
+        $(document).ready(() => {
+            $("button#editar").click((e) => {
+                const data = e.target.getAttribute("data-modal").split(":");
+                $("#id").val(data[0]);
+                $("#marca").val(data[1]);
+                $("#modelo").val(data[2]);
+                $("#color").val(data[3]);
+            });
+
+            $("button#eliminar").click((e) => {
+                const data = e.target.getAttribute("data-modal").split(":");
+                $("#cliente").val(data[0]);
+                $("#vehiculo").val(data[1]);
+            });
+        })
+    </script>
+
+    
 
 </body>
 

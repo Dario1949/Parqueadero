@@ -25,12 +25,7 @@ error_reporting(0);
             <?php include "./includes/header.php"; ?>
             <div class="col py-3">
                 <h3>Parqueadero</h3>
-                <?php include "./includes/index/index_asistentes.php"; ?>
-                <?php include "./includes/index/index_cajeros.php"; ?>
-                <?php include "./includes/index/index_clientes.php"; ?>
-                <?php include "./includes/index/index_dueños.php"; ?>
-                <?php include "./includes/index/index_puestos.php"; ?>
-                <?php include "./includes/index/index_vehiculos.php"; ?>
+                <?php include "./vista/panel.php"; ?>
             </div>
         </div>
     </div>

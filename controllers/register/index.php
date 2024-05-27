@@ -37,7 +37,7 @@ if (mysqli_num_rows($comprobar_correo_existe) > 0) {
     $respuesta['message'] = "El correo ya está en uso, por favor elija otro";
 } else {
     // Vamos a crear la cuenta
-    $crear_cuenta = mysqli_query($conn, "INSERT INTO ".$rol." (nombre,apellido,correo,clave,telefono,salario) VALUES ('$name', '$lastname', '$email', '$password', '$tel', '1200000')");
+    $crear_cuenta = mysqli_query($conn, "INSERT INTO ".$rol." (nombre,apellido,correo,clave,telefono) VALUES ('$name', '$lastname', '$email', '$password', '$tel')");
     if ($crear_cuenta) {
         $respuesta['success'] = true;
         $respuesta['message'] = "Se ha creado la cuenta con éxito";

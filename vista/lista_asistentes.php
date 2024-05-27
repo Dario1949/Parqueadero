@@ -42,8 +42,8 @@ $session = sessionLocal($session, $conn);
             <?php include "../includes/header.php"; ?>
             <div class="col py-3">
                 <h2>Asistentes</h2>
-                <div class="d-block p-10">
-                    <button type="button" class="btn btn-primary" data-href="http://<?php echo $host; ?>/ParqueaderoVL/registrar/registrar_asistente.php" data-bs-toggle="tooltip" data-bs-placement="top" title="Crear asistente">
+                <div class="d-block p-10 mb-2">
+                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#crearAsistente" title="Crear asistente">
                         <svg width="20" height="20" xmlns="http://www.w3.org/2000/svg" class="d-inline-block align-middle">
                             <image href="../icons/plus-circle-1441-svgrepo-com.svg" height="20" width="20" />
                         </svg>
@@ -74,15 +74,11 @@ $session = sessionLocal($session, $conn);
                                     <td><?php echo $cajero["correo"]; ?></td>
                                     <td><?php echo $cajero["salario"]; ?></td>
                                     <td>
-                                        <button type="button" class="btn btn-success" data-bs-toggle="tooltip" data-bs-placement="top" data-href="http://<?php echo $host; ?>/ParqueaderoVL/editar/editar_asistentes.php?id=<?php echo $cajero["id"]; ?>" title="Editar">
-                                            <svg width="20" height="20" xmlns="http://www.w3.org/2000/svg" class="d-inline-block align-middle">
-                                                <image href="../icons/edit-svgrepo-com.svg" height="20" width="20" />
-                                            </svg>
+                                        <button type="button" data-modal="<?= $cajero["id"]; ?>:<?= $cajero["nombre"]; ?>:<?= $cajero["apellido"]; ?>:<?= $cajero["telefono"]; ?>:<?= $cajero["correo"]; ?>:<?= $cajero["clave"]; ?>:<?= $cajero["salario"]; ?>" class="btn btn-success" id="editar" data-bs-toggle="modal" data-bs-target="#editarAsistentes" title="Editar">
+                                            Editar
                                         </button>
                                         <button type="button" class="btn btn-danger" data-bs-toggle="tooltip" data-bs-placement="top" data-confirm-delete="true" data-delete-card="asistente" data-href-delete="http://<?php echo $host; ?>/ParqueaderoVL/delete/delete_asistente.php?id=<?php echo $cajero["id"]; ?>" title="Eliminar">
-                                            <svg width="20" height="20" xmlns="http://www.w3.org/2000/svg" class="d-inline-block align-middle">
-                                                <image href="../icons/delete-1487-svgrepo-com.svg" height="20" width="20" />
-                                            </svg>
+                                            Eliminar
                                         </button>
                                     </td>
                                 </tr>
@@ -96,6 +92,23 @@ $session = sessionLocal($session, $conn);
     </div>
 
     <?php include "../includes/js.php"; ?>
+    <?php include "../modals/editar_asistente.php"; ?>
+    <?php include "../modals/crear_asistente.php"; ?>
+
+    <script>
+        $(document).ready(() => {
+            $("button#editar").click((e) => {
+                const data = e.target.getAttribute("data-modal").split(":");            
+                $("#id").val(data[0]);
+                $("#nombre").val(data[1]);
+                $("#apellido").val(data[2]);
+                $("#telefono").val(data[3]);
+                $("#correo").val(data[4]);
+                $("#clave").val(data[5]);
+                $("#salario").val(data[6]);                
+            });            
+        })
+    </script>
 
 </body>
 

@@ -42,8 +42,8 @@ $session = sessionLocal($session, $conn);
             <?php include "../includes/header.php"; ?>
             <div class="col py-3">
                 <h2>Cajeros</h2>
-                <div class="d-block p-10">
-                    <button type="button" class="btn btn-primary" data-bs-toggle="tooltip" data-href="http://<?php echo $host; ?>/ParqueaderoVL/registrar/registrar_cajero.php" data-bs-placement="top" title="Crear cajero">
+                <div class="d-block p-10 mb-2">
+                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#crearCajero" title="Crear dueño">
                         <svg width="20" height="20" xmlns="http://www.w3.org/2000/svg" class="d-inline-block align-middle">
                             <image href="../icons/plus-circle-1441-svgrepo-com.svg" height="20" width="20" />
                         </svg>
@@ -65,7 +65,7 @@ $session = sessionLocal($session, $conn);
                         <?php
                         $resultado = mysqli_query($conn, "SELECT * FROM cajeros ORDER BY id DESC");
                         if (mysqli_num_rows($resultado) > 0) {
-                            while ($cajero = mysqli_fetch_assoc($resultado)) { ?>
+                            while ($cajero = mysqli_fetch_assoc($resultado)) { ?>                                
                                 <tr>
                                     <th scope="row"><?php echo $cajero["id"]; ?></th>
                                     <td><?php echo $cajero["nombre"]; ?></td>
@@ -74,15 +74,11 @@ $session = sessionLocal($session, $conn);
                                     <td><?php echo $cajero["correo"]; ?></td>
                                     <td><?php echo $cajero["salario"]; ?></td>
                                     <td>
-                                        <button type="button" class="btn btn-success" data-bs-toggle="tooltip" data-bs-placement="top" data-href="http://<?php echo $host; ?>/ParqueaderoVL/editar/editar_cajero.php?id=<?php echo $cajero["id"]; ?>" title="Editar">
-                                            <svg width="20" height="20" xmlns="http://www.w3.org/2000/svg" class="d-inline-block align-middle">
-                                                <image href="../icons/edit-svgrepo-com.svg" height="20" width="20" />
-                                            </svg>
+                                        <button type="button" data-modal="<?= $cajero["id"]; ?>:<?= $cajero["nombre"]; ?>:<?= $cajero["apellido"]; ?>:<?= $cajero["telefono"]; ?>:<?= $cajero["correo"]; ?>:<?= $cajero["clave"]; ?>:<?= $cajero["salario"]; ?>" class="btn btn-success" id="editar" data-bs-toggle="modal" data-bs-target="#editarCajero" title="Editar">
+                                            Editar
                                         </button>
                                         <button type="button" class="btn btn-danger" data-bs-toggle="tooltip" data-bs-placement="top" data-confirm-delete="true" data-delete-card="cajero" data-href-delete="http://<?php echo $host; ?>/ParqueaderoVL/delete/delete_vehiculo.php?id=<?php echo $cajero["id"]; ?>" title="Eliminar">
-                                            <svg width="20" height="20" xmlns="http://www.w3.org/2000/svg" class="d-inline-block align-middle">
-                                                <image href="../icons/delete-1487-svgrepo-com.svg" height="20" width="20" />
-                                            </svg>
+                                            Eliminar
                                         </button>
                                     </td>
                                 </tr>
@@ -95,7 +91,24 @@ $session = sessionLocal($session, $conn);
         </div>
     </div>
 
-    <?php include "../includes/js.php"; ?>    
+    <?php include "../includes/js.php"; ?>
+    <?php include "../modals/editar_cajero.php"; ?>
+    <?php include "../modals/crear_cajero.php"; ?>
+
+    <script>
+        $(document).ready(() => {
+            $("button#editar").click((e) => {
+                const data = e.target.getAttribute("data-modal").split(":");            
+                $("#id").val(data[0]);
+                $("#nombre").val(data[1]);
+                $("#apellido").val(data[2]);
+                $("#telefono").val(data[3]);
+                $("#correo").val(data[4]);
+                $("#clave").val(data[5]);
+                $("#salario").val(data[6]);                
+            });            
+        })
+    </script>
 
 </body>
 

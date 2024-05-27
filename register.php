@@ -3,6 +3,8 @@ session_start();
 require("./config/config.php");
 
 error_reporting(0);
+$query = mysqli_query($conn, "SELECT * FROM duenos");
+$duenos_contar = mysqli_num_rows($query);
 ?>
 
 <!DOCTYPE html>
@@ -137,7 +139,7 @@ error_reporting(0);
                             Crear cuenta
                         </button>
                         <div class="text-center">
-                            <p>¿Ya tienes una cuenta? <a href="register.php">Iniciar sesión</a></p>
+                            <p>¿Ya tienes una cuenta? <a href="index.php">Iniciar sesión</a></p>
                         </div>
                     </form>
                 </section>

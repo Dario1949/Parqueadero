@@ -25,13 +25,14 @@ $imagen.addEventListener("change", () => {
 });
 
 $btnDetectar.addEventListener("click", () => {
+  $estado.innerHTML = "";
   const archivos = $imagen.files;
   if (!archivos.length) return alert("No hay imágenes");
   const worker = new Tesseract.TesseractWorker();
   worker
     .recognize(archivos[0], "spa")
     .progress((p) => {
-      $estado.innerHTML += `<br><strong>Estado: ${p.status} </strong> (${
+      $estado.innerHTML = `<br><strong>Estado: ${p.status} </strong> (${
         p.progress * 100
       } % )`;
     })

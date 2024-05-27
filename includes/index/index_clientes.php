@@ -1,3 +1,4 @@
+<?php if (obtenerCampo("rol") >= 2) { ?>
 <!-- Mostrar clientes -->
 <hr />
 <h4>Clientes</h4>
@@ -18,16 +19,7 @@
                     <li class="list-group-item"><?php echo $cli["telefono"]; ?></li>
                 </ul>
                 <div class="card-body">
-                    <button type="button" class="btn btn-success" data-bs-toggle="tooltip" data-bs-placement="top" data-href="http://<?php echo $host; ?>/ParqueaderoVL/editar/editar_cliente.php?id=<?php echo $cli["id_cliente"]; ?>" title="Editar">
-                        <svg width="20" height="20" xmlns="http://www.w3.org/2000/svg" class="d-inline-block align-middle">
-                            <image href="icons/edit-svgrepo-com.svg" height="20" width="20" />
-                        </svg>
-                    </button>
-                    <button type="button" class="btn btn-danger" data-bs-toggle="tooltip" data-bs-placement="top" data-confirm-delete="true" data-delete-card="cliente" data-href-delete="http://<?php echo $host; ?>/ParqueaderoVL/delete/delete_cliente.php?id=<?php echo $cli["id_cliente"]; ?>" title="Eliminar">
-                        <svg width="20" height="20" xmlns="http://www.w3.org/2000/svg" class="d-inline-block align-middle">
-                            <image href="icons/delete-1487-svgrepo-com.svg" height="20" width="20" />
-                        </svg>
-                    </button>
+                    <a href="vista/lista_clientes.php">Ver clientes</a>
                 </div>
             </div>
     <?php
@@ -37,3 +29,4 @@
 </div>
 
 <!-- Fin mostrar clientes -->
+<?php } ?>

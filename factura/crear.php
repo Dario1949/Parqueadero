@@ -123,7 +123,7 @@ if(isset($_POST["enviar"])) {
             const minutes = now.getMinutes();
             const seconds = now.getSeconds();
 
-            const formattedDate = ${year}-${pad(month)}-${pad(day)} ${pad(hours)}:${pad(minutes)}:${pad(seconds)};
+            const formattedDate = `${year}-${pad(month)}-${pad(day)} ${pad(hours)}:${pad(minutes)}:${pad(seconds)}`;
             return formattedDate;
         }
 

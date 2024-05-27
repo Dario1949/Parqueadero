@@ -1,3 +1,4 @@
+<?php if (obtenerCampo("rol") >= 2) { ?>
 <!-- Mostrar cajeros -->
 <hr />
 <h4>Cajeros</h4>
@@ -19,16 +20,7 @@
                     <li class="list-group-item"><?php echo $caj["salario"]; ?></li>
                 </ul>
                 <div class="card-body">
-                    <button type="button" class="btn btn-success" data-bs-toggle="tooltip" data-bs-placement="top" data-href="http://<?php echo $host; ?>/ParqueaderoVL/editar/editar_cajero.php?id=<?php echo $caj["id"]; ?>" title="Editar">
-                        <svg width="20" height="20" xmlns="http://www.w3.org/2000/svg" class="d-inline-block align-middle">
-                            <image href="icons/edit-svgrepo-com.svg" height="20" width="20" />
-                        </svg>
-                    </button>
-                    <button type="button" class="btn btn-danger" data-bs-toggle="tooltip" data-bs-placement="top" data-confirm-delete="true" data-delete-card="cajero" data-href-delete="http://<?php echo $host; ?>/ParqueaderoVL/delete/delete_cajero.php?id=<?php echo $caj["id"]; ?>" title="Eliminar">
-                        <svg width="20" height="20" xmlns="http://www.w3.org/2000/svg" class="d-inline-block align-middle">
-                            <image href="icons/delete-1487-svgrepo-com.svg" height="20" width="20" />
-                        </svg>
-                    </button>
+                    <a href="vista/lista_cajeros.php">Ver cajeros</a>
                 </div>
             </div>
     <?php
@@ -39,3 +31,4 @@
 </div>
 
 <!-- Fin mostrar cajeros -->
+<?php } ?>

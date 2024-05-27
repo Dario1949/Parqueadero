@@ -15,4 +15,3 @@ if($eliminar) {
     echo "<script>window.alert('Ha ocurrido un error');</script>";
     echo "<script>window.location.href = 'http://".$host."/ParqueaderoVL/vista/lista_clientes.php'</script>";
 }
-?>

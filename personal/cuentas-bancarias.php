@@ -66,7 +66,7 @@ if (isset($_POST["crear_cuenta"])) {
         <div class="row flex-nowrap">
             <?php /* include "../includes/header.php"; */ ?>
             <div class="col py-3">
-            <button class="btn btn-primary" data-href="/ParqueaderoVL/home.php">Volver a inicio</button>
+            <a href=" /ParqueaderoVL/home.php">Regresar</a> 
                 <h2 class="mt-4 mb-4">Agregar cuenta bancaria</h2>
                 <form method="post" action="">
                     <div class="form-group">

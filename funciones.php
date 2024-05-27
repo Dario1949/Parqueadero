@@ -1,6 +1,6 @@
 <?php
 function obtenerCampo($nombre) {
-    $r = "";
+    $r = null;
     $c = $_COOKIE["usuario"] ? $_COOKIE["usuario"] : "";
     $cortar = explode(":", $c);
 

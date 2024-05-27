@@ -42,13 +42,15 @@ $session = sessionLocal($session, $conn);
             <?php include "../includes/header.php"; ?>
             <div class="col py-3">
                 <h2>Puestos</h2>
-                <div class="d-block p-10">
-                    <button type="button" class="btn btn-primary" data-bs-placement="top" data-href="http://<?php echo $host; ?>/ParqueaderoVL/puestos/crear_puesto.php" data-bs-toggle="tooltip" data-bs-placement="top" title="Crear puesto">
-                        <svg width="20" height="20" xmlns="http://www.w3.org/2000/svg" class="d-inline-block align-middle">
-                            <image href="../icons/plus-circle-1441-svgrepo-com.svg" height="20" width="20" />
-                        </svg>
-                    </button>
-                </div>
+                <?php if (obtenerCampo("rol") >= 2) { ?>
+                    <div class="d-block p-10 mb-2">
+                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#crearPuesto" title="Crear puesto">
+                            <svg width="20" height="20" xmlns="http://www.w3.org/2000/svg" class="d-inline-block align-middle">
+                                <image href="../icons/plus-circle-1441-svgrepo-com.svg" height="20" width="20" />
+                            </svg>
+                        </button>
+                    </div>
+                <?php } ?>
                 <table class="table">
                     <thead>
                         <tr>
@@ -66,25 +68,23 @@ $session = sessionLocal($session, $conn);
                                     <th scope="row"><?php echo $puesto["id"]; ?></th>
                                     <td><?php echo $puesto["numero"]; ?></td>
                                     <td>
-                                        <?php 
-                                            if($puesto["disponibilidad"]) { ?>
-                                                <button type="button" class="btn btn-primary">Disponible</button>
-                                            <?php } else { ?>
-                                                <button type="button" class="btn btn-secondary" data-bs-toggle="popover" data-bs-title="<?php echo $puesto["placa"]; ?> <?php echo $puesto["marca"]; ?>" data-bs-content="Modelo: <?php echo $puesto["modelo"]; ?>">Ocupado</button>
-                                            <?php } ?>
+                                        <?php
+                                        if ($puesto["disponibilidad"]) { ?>
+                                            <button type="button" class="btn btn-primary">Disponible</button>
+                                        <?php } else { ?>
+                                            <button type="button" class="btn btn-secondary" data-bs-toggle="popover" data-bs-title="<?php echo $puesto["placa"]; ?> <?php echo $puesto["marca"]; ?>" data-bs-content="Modelo: <?php echo $puesto["modelo"]; ?>">Ocupado</button>
+                                        <?php } ?>
                                     </td>
-                                    <td>
-                                        <button type="button" class="btn btn-success" data-bs-toggle="tooltip" data-bs-placement="top" data-href="http://<?php echo $host; ?>/ParqueaderoVL/editar/editar_puesto.php?id=<?php echo $puesto["id"]; ?>" title="Editar">
-                                            <svg width="20" height="20" xmlns="http://www.w3.org/2000/svg" class="d-inline-block align-middle">
-                                                <image href="../icons/edit-svgrepo-com.svg" height="20" width="20" />
-                                            </svg>
-                                        </button>
-                                        <button type="button" class="btn btn-danger" data-bs-toggle="tooltip" data-bs-placement="top" data-confirm-delete="true" data-delete-card="puesto" data-href-delete="http://<?php echo $host; ?>/ParqueaderoVL/delete/delete_puesto.php?id=<?php echo $puesto["id"]; ?>" title="Eliminar">
-                                            <svg width="20" height="20" xmlns="http://www.w3.org/2000/svg" class="d-inline-block align-middle">
-                                                <image href="../icons/delete-1487-svgrepo-com.svg" height="20" width="20" />
-                                            </svg>
-                                        </button>
-                                    </td>
+                                    <?php if (obtenerCampo("rol") >= 2) { ?>
+                                        <td>
+                                            <button type="button" data-modal="<?php echo $puesto["numero"]; ?>:<?php echo $puesto["id"]; ?>" class="btn btn-success" id="editar" data-bs-toggle="modal" data-bs-target="#editarPuesto" title="Editar">
+                                                Editar
+                                            </button>
+                                            <button type="button" class="btn btn-danger" data-bs-toggle="tooltip" data-bs-placement="top" data-confirm-delete="true" data-delete-card="puesto" data-href-delete="http://<?php echo $host; ?>/ParqueaderoVL/delete/delete_puesto.php?id=<?php echo $puesto["id"]; ?>" title="Eliminar">
+                                                Eliminar
+                                            </button>
+                                        </td>
+                                    <?php } ?>
                                 </tr>
                         <?php }
                         }
@@ -95,6 +95,18 @@ $session = sessionLocal($session, $conn);
         </div>
     </div>
     <?php include "../includes/js.php"; ?>
+    <?php include "../modals/crear_puesto.php"; ?>
+    <?php include "../modals/editar_puesto.php"; ?>
+
+    <script>
+        $(document).ready(() => {
+            $("button#editar").click((e) => {
+                const data = e.target.getAttribute("data-modal").split(":");
+                $("#numero").val(data[0]);
+                $("#id").val(data[1]);
+            });
+        })
+    </script>
 
 </body>
 

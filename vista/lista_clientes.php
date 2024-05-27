@@ -42,8 +42,8 @@ $session = sessionLocal($session, $conn);
             <?php include "../includes/header.php"; ?>
             <div class="col py-3">
                 <h2>Clientes</h2>
-                <div class="d-block p-10">
-                    <button type="button" class="btn btn-primary" data-bs-toggle="tooltip" data-href="http://<?php echo $host; ?>/ParqueaderoVL/registrar/registrar_cliente.php" data-bs-placement="top" title="Crear cliente">
+                <div class="d-block p-10 mb-2">
+                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#crearCliente" title="Crear cliente">
                         <svg width="20" height="20" xmlns="http://www.w3.org/2000/svg" class="d-inline-block align-middle">
                             <image href="../icons/plus-circle-1441-svgrepo-com.svg" height="20" width="20" />
                         </svg>
@@ -72,15 +72,11 @@ $session = sessionLocal($session, $conn);
                                     <td><?php echo $cliente["telefono"]; ?></td>
                                     <td><?php echo $cliente["correo"]; ?></td>
                                     <td>
-                                        <button type="button" class="btn btn-success" data-bs-toggle="tooltip" data-bs-placement="top" data-href="http://<?php echo $host; ?>/ParqueaderoVL/editar/editar_cliente.php?id=<?php echo $cliente["id_cliente"]; ?>" title="Editar">
-                                            <svg width="20" height="20" xmlns="http://www.w3.org/2000/svg" class="d-inline-block align-middle">
-                                                <image href="../icons/edit-svgrepo-com.svg" height="20" width="20" />
-                                            </svg>
+                                        <button type="button" data-modal="<?= $cliente["id_cliente"]; ?>:<?= $cliente["nombre"]; ?>:<?= $cliente["apellido"]; ?>:<?= $cliente["telefono"]; ?>:<?= $cliente["correo"]; ?>:<?= $cliente["clave"]; ?>" class="btn btn-success" id="editar" data-bs-toggle="modal" data-bs-target="#editarCliente" title="Editar">
+                                            Editar
                                         </button>
                                         <button type="button" class="btn btn-danger" data-bs-toggle="tooltip" data-bs-placement="top" data-confirm-delete="true" data-delete-card="cliente" data-href-delete="http://<?php echo $host; ?>/ParqueaderoVL/delete/delete_cliente.php?id=<?php echo $cliente["id_cliente"]; ?>" title="Eliminar">
-                                            <svg width="20" height="20" xmlns="http://www.w3.org/2000/svg" class="d-inline-block align-middle">
-                                                <image href="../icons/delete-1487-svgrepo-com.svg" height="20" width="20" />
-                                            </svg>
+                                            Eliminar
                                         </button>
                                     </td>
                                 </tr>
@@ -93,6 +89,22 @@ $session = sessionLocal($session, $conn);
         </div>
     </div>
     <?php include "../includes/js.php"; ?>
+    <?php include "../modals/editar_cliente.php"; ?>
+    <?php include "../modals/crear_cliente.php"; ?>
+
+    <script>
+        $(document).ready(() => {
+            $("button#editar").click((e) => {
+                const data = e.target.getAttribute("data-modal").split(":");            
+                $("#id").val(data[0]);
+                $("#nombre").val(data[1]);
+                $("#apellido").val(data[2]);
+                $("#telefono").val(data[3]);
+                $("#correo").val(data[4]);
+                $("#clave").val(data[5]);               
+            });            
+        })
+    </script>
 
 </body>
 
